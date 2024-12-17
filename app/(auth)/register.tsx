@@ -11,15 +11,19 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleRegister = () => {
-    if (!email || !password || !confirmPassword) {
-      setError('All fields are required');
-    } else if (password !== confirmPassword) {
-      setError('Passwords do not match');
+  const handleRegister = async () => {
+    if (!email || !password) {
+      setError('Both fields are required');
     } else {
       setError('');
-      // Handle register logic
-      console.log('Registered:', { email, password });
+      try {
+        // Handle registration logic
+        // await registerUser({ email, password });
+        router.replace('/(onboarding)/name');
+      } catch (err) {
+        console.log(err);
+        setError('Registration failed');
+      }
     }
   };
 

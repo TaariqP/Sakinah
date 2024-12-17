@@ -17,7 +17,7 @@ export default function LoginScreen() {
       setError('');
       // Handle login logic (e.g., authentication API)
       console.log('Logged in:', { email, password });
-      router.replace('/(tabs)/home');
+      router.replace('/(tabs)/discover');
     }
   };
 
