@@ -10,11 +10,21 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="profile"
         options={{
-          title: 'Home',
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="discover"
+        options={{
+          title: 'Discover',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="cards" size={size} color={color} />
           ),

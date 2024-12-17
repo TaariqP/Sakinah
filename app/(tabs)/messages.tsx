@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { Surface, Text, Avatar, TouchableRipple, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Header } from '@/components/ui/Header';
 
 interface Message {
   id: string;
@@ -80,17 +81,15 @@ export default function MessagesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Surface style={styles.header} elevation={1}>
-        <Text style={styles.headerTitle}>Messages</Text>
-      </Surface>
+    <View style={styles.container}>
+      <Header title="Messages" />
       <FlatList
         data={mockMessages}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

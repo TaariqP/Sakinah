@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { Surface } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeCard from '@/components/ui/SwipeCard';
+import { Header } from '@/components/ui/Header';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,8 +30,17 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <Header title="Discover" />
       <View style={styles.cardContainer}>
+        {currentIndex < profiles.length - 1 && (
+          <SwipeCard
+            key={profiles[currentIndex + 1].id}
+            card={profiles[currentIndex + 1]}
+            onSwipe={handleSwipe}
+            isNext
+          />
+        )}
         {currentIndex < profiles.length && (
           <SwipeCard
             key={profiles[currentIndex].id}
@@ -38,7 +49,7 @@ export default function HomeScreen() {
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
