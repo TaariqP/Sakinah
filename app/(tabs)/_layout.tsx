@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function TabLayout() {
+export default function TabsLayout() {
   const theme = useTheme();
 
   return (
@@ -13,11 +13,11 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: 'Profile',
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" size={size} color={color} />
+            <MaterialCommunityIcons name="cog" size={size} color={color} />
           ),
         }}
       />
@@ -31,11 +31,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="messages"
+        name="matches"
         options={{
-          title: 'Messages',
+          title: 'Matches',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="message-text" size={size} color={color} />
+            <MaterialCommunityIcons name="account-group" size={size} color={color} />
           ),
         }}
       />

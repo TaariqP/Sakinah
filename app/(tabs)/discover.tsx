@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { Surface } from 'react-native-paper';
+import { Surface, IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeCard from '@/components/ui/SwipeCard';
-import { Header } from '@/components/ui/Header';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,7 +11,6 @@ interface Profile {
   name: string;
   age: number;
 }
-
 const profiles: Profile[] = [
   { id: 1, name: 'Sarah', age: 25 },
   { id: 2, name: 'Michael', age: 28 },
@@ -29,9 +27,20 @@ export default function HomeScreen() {
     setCurrentIndex(prev => Math.min(prev + 1, profiles.length - 1));
   };
 
+  const handleFilterPress = () => {
+    console.log('Filter button pressed');
+    // Add your filter logic here
+  };
+
   return (
     <View style={styles.container}>
-      <Header title="Discover" />
+      <View style={styles.header}>
+        <IconButton
+          icon="filter-variant"
+          size={24}
+          onPress={handleFilterPress}
+        />
+      </View>
       <View style={styles.cardContainer}>
         {currentIndex < profiles.length - 1 && (
           <SwipeCard
@@ -58,9 +67,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
   cardContainer: {
     flex: 1,
-    justifyContent: 'center', // Centers card vertically
-    alignItems: 'center', // Centers card horizontally
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
+

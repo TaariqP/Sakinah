@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Surface, Button, Text } from 'react-native-paper';
+import { Text, Button, Surface } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Header } from '@/components/ui/Header';
-import { router } from 'expo-router';
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
+  const handleDeleteAccount = () => {
+    console.log('Delete Account');
+    // Add your delete account logic here
+  };
+
   return (
     <View style={styles.container}>
-      <Header title="Profile" />
       <View style={styles.content}>
-        <Surface style={styles.profileCard} elevation={2}>
+        <Surface style={styles.settingsCard} elevation={2}>
           <Image
-            source={{ uri: 'https://picsum.photos/seed/profile/200' }}
-            style={styles.profileImage}
+            source={{ uri: 'https://picsum.photos/seed/settings/200' }}
+            style={styles.settingsImage}
           />
           <Text style={styles.name}>John Doe</Text>
           <Text style={styles.email}>john.doe@example.com</Text>
@@ -35,13 +37,25 @@ export default function ProfileScreen() {
           <Button
             mode="contained"
             icon={({ size, color }) => (
-              <MaterialCommunityIcons name="cog" size={size} color={color} />
+              <MaterialCommunityIcons name="delete" size={size} color={color} />
             )}
             style={styles.button}
             contentStyle={styles.buttonContent}
-            onPress={() => console.log('Settings')}
+            onPress={handleDeleteAccount}
           >
-            Settings
+            Delete Account
+          </Button>
+
+          <Button
+            mode="contained"
+            icon={({ size, color }) => (
+              <MaterialCommunityIcons name="account" size={size} color={color} />
+            )}
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            onPress={() => console.log('View Profile')}
+          >
+            View Profile
           </Button>
 
           <Button
@@ -51,7 +65,7 @@ export default function ProfileScreen() {
             )}
             style={styles.button}
             contentStyle={styles.buttonContent}
-            onPress={() => router.push('/(settings)/contact')}
+            onPress={() => console.log('Contact Us')}
           >
             Contact Us
           </Button>
@@ -65,41 +79,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    paddingTop: 20,
   },
   content: {
-    flex: 1,
-    padding: 20,
+    padding: 16,
   },
-  profileCard: {
-    padding: 20,
+  settingsCard: {
     alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: 'white',
+    padding: 16,
+    marginBottom: 16,
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 15,
+  settingsImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
   },
   name: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   email: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 10,
+    fontSize: 14,
+    color: 'gray',
   },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 16,
   },
   button: {
-    marginVertical: 8,
-    borderRadius: 8,
+    marginBottom: 8,
   },
   buttonContent: {
-    paddingVertical: 8,
+    flexDirection: 'row-reverse',
   },
 }); 
