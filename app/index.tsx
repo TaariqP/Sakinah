@@ -12,7 +12,7 @@ export default function HomeScreen() {
       <Surface style={styles.content} elevation={0}>
         <View style={styles.logoContainer}>
           <Image 
-            source={require('../assets/images/icon.png')} 
+            source={require('../assets/images/sakinah-logo.png')} 
             style={styles.logo}
           />
           <Text style={[styles.title, { color: theme.colors.primary }]}>
