@@ -6,7 +6,6 @@ import { router } from 'expo-router';
 
 interface OnboardingScreenProps {
   title: string;
-  subtitle?: string;
   children: React.ReactNode;
   onNext: () => void | Promise<void>;
   nextLabel?: string;
@@ -15,7 +14,6 @@ interface OnboardingScreenProps {
 
 export function OnboardingScreen({ 
   title, 
-  subtitle, 
   children, 
   onNext, 
   nextLabel = "Continue",
@@ -44,9 +42,6 @@ export function OnboardingScreen({
             <Text style={[styles.title, { color: theme.colors.primary }]}>
               {title}
             </Text>
-            {subtitle && (
-              <Text style={styles.subtitle}>{subtitle}</Text>
-            )}
           </View>
 
           <View style={styles.inputContainer}>
@@ -86,10 +81,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
   },
   inputContainer: {
     flex: 1,
