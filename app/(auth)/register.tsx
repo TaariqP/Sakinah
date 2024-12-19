@@ -3,6 +3,7 @@ import { View, StyleSheet, Image } from 'react-native';
 import { TextInput, Text, Button, Title, Surface, useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { getFirstScreen } from '../(onboarding)/constants/screenConfig';
 
 export default function RegisterScreen() {
   const theme = useTheme();
@@ -12,19 +13,9 @@ export default function RegisterScreen() {
   const [error, setError] = useState('');
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      setError('Both fields are required');
-    } else {
-      setError('');
-      try {
-        // Handle registration logic
-        // await registerUser({ email, password });
-        router.replace('/(onboarding)/name');
-      } catch (err) {
-        console.log(err);
-        setError('Registration failed');
-      }
-    }
+    const firstScreen = getFirstScreen();
+    console.log('First screen:', firstScreen);
+    router.push(`/(onboarding)/screens/${firstScreen}`);
   };
 
   return (
@@ -32,7 +23,7 @@ export default function RegisterScreen() {
       <StatusBar style="auto" />
       <Surface style={styles.surface} elevation={4}>
         <Image 
-          source={require('../../assets/images/icon.png')} 
+          source={require('../../assets/images/sakinah-logo.png')} 
           style={styles.logo}
         />
         <Title style={styles.title}>Create Account</Title>
