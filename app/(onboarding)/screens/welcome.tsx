@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { OnboardingScreen } from '@/components/ui/OnboardingScreen';
 import { router } from 'expo-router';
-import { submitUserProfile } from '@/utils/userProfile';
+import { submitMyUserProfile } from '@/utils/myProfile';
 
 export default function WelcomeScreen() {
   const handleNext = async () => {
-    await submitUserProfile();
+    await submitMyUserProfile();
     router.push('/(tabs)/discover');
   };
 

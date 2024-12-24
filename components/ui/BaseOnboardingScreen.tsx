@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { OnboardingScreen } from '@/components/ui/OnboardingScreen';
 import { router } from 'expo-router';
-import { saveUserProfile } from '@/utils/userProfile';
+import { saveMyUserProfile } from '@/utils/myProfile';
 import { getNextScreen } from '@/app/(onboarding)/constants/screenConfig';
 
 interface BaseOnboardingScreenProps {
@@ -21,7 +21,7 @@ export default function BaseOnboardingScreen({
   children 
 }: BaseOnboardingScreenProps) {
   const handleNext = async () => {
-    await saveUserProfile({ [name]: value });
+    await saveMyUserProfile({ [name]: value });
     const nextScreen = getNextScreen(name);
     router.push(`/(onboarding)/screens/${nextScreen}`);
   };

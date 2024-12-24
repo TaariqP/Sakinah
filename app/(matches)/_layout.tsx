@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 
-export default function SettingsLayout() {
+export default function MatchesLayout() {
   return (
     <Stack 
       screenOptions={{ 
@@ -8,9 +8,7 @@ export default function SettingsLayout() {
         animation: 'slide_from_right'
       }}
     >
-      <Stack.Screen name="viewprofile" />
-      <Stack.Screen name="contact" />
-
+      <Stack.Screen name="matchprofile" />
     </Stack>
   );
 } 

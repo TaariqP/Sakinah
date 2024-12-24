@@ -10,17 +10,12 @@ import Animated, {
   Extrapolate,
 } from 'react-native-reanimated';
 import { Surface, useTheme } from 'react-native-paper';
+import { UserProfile } from '@/utils/types';
 
 const { width, height } = Dimensions.get('window');
 
-interface Profile {
-  id: number;
-  name: string;
-  age: number;
-}
-
 interface SwipeCardProps {
-  card: Profile;
+  card: UserProfile;
   onSwipe: (direction: 'left' | 'right') => void;
 }
 

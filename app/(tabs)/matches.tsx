@@ -2,37 +2,24 @@ import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Avatar, Text, Surface, TouchableRipple } from 'react-native-paper';
 // import { Header } from '@/components/ui/Header';
-import { useNavigation } from '@react-navigation/native';
-
-interface Profile {
-  id: number;
-  name: string;
-  age: number;
-  avatar: string;
-  location: string;
-}
-
-const profiles: Profile[] = [
-  { id: 1, name: 'Sarah', age: 25, avatar: 'https://picsum.photos/seed/p1/200', location: 'New York' },
-  { id: 2, name: 'Michael', age: 28, avatar: 'https://picsum.photos/seed/p2/200', location: 'Los Angeles' },
-  { id: 3, name: 'Emma', age: 24, avatar: 'https://picsum.photos/seed/p3/200', location: 'Chicago' },
-  { id: 4, name: 'James', age: 27, avatar: 'https://picsum.photos/seed/p4/200', location: 'Houston' },
-  { id: 5, name: 'Olivia', age: 26, avatar: 'https://picsum.photos/seed/p5/200', location: 'Miami' },
-];
-
+import { useRouter } from 'expo-router';
+import { profiles } from '@/utils/mockData'; // Import the profiles array
+import { UserProfile } from '@/utils/types';
 export default function MatchesScreen() {
-  const navigation = useNavigation();
+  const router = useRouter();
 
-  const renderItem = ({ item }: { item: Profile }) => (
+  const renderItem = ({ item }: { item: UserProfile }) => (
     <TouchableRipple
-      onPress={() => console.log('Matched with ', item.name)}
+      onPress={() => router.push(`/(matches)/matchprofile?id=${item.id.toString()}`)}
       style={styles.profileItem}
     >
       <Surface style={styles.profileSurface} elevation={0}>
-        <Avatar.Image size={50} source={{ uri: item.avatar }} />
         <View style={styles.profileContent}>
-          <Text style={styles.profileName}>{item.name}, {item.age}</Text>
-          <Text style={styles.profileLocation}>{item.location}</Text>
+          <Text style={styles.profileName}>{item.name}</Text>
+          {/* <Text style={styles.profileLocation}>{item.}</Text> */}
+          {/* <Text style={styles.profileBiography}>{item.biography}</Text> */}
+          {/* <Text style={styles.profileOccupation}>Occupation: {item.occupation}</Text> */}
+          {/* <Text style={styles.profileEducation}>Education: {item.education}</Text> */}
         </View>
       </Surface>
     </TouchableRipple>
@@ -77,6 +64,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   profileLocation: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  profileBiography: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  profileOccupation: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  profileEducation: {
     fontSize: 14,
     color: 'gray',
   },

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { Surface, IconButton } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SwipeCard from '@/components/ui/SwipeCard';
+import { profiles } from '@/utils/mockData'; // Import the profiles array
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,13 +13,6 @@ interface Profile {
   name: string;
   age: number;
 }
-const profiles: Profile[] = [
-  { id: 1, name: 'Sarah', age: 25 },
-  { id: 2, name: 'Michael', age: 28 },
-  { id: 3, name: 'Emma', age: 24 },
-  { id: 4, name: 'James', age: 27 },
-  { id: 5, name: 'Olivia', age: 26 },
-];
 
 export default function HomeScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,50 +28,68 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <IconButton
-          icon="filter-variant"
-          size={24}
-          onPress={handleFilterPress}
-        />
-      </View>
-      <View style={styles.cardContainer}>
-        {currentIndex < profiles.length - 1 && (
-          <SwipeCard
-            key={profiles[currentIndex + 1].id}
-            card={profiles[currentIndex + 1]}
-            onSwipe={handleSwipe}
-            isNext
+    <LinearGradient
+      colors={['#ffffff', '#f5f5f5']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        {/* Filter Button */}
+        <View style={styles.filterContainer}>
+          <IconButton
+            icon="filter-variant"
+            size={30}
+            onPress={handleFilterPress}
+            style={styles.filterButton}
           />
-        )}
-        {currentIndex < profiles.length && (
-          <SwipeCard
-            key={profiles[currentIndex].id}
-            card={profiles[currentIndex]}
-            onSwipe={handleSwipe}
-          />
-        )}
-      </View>
-    </View>
+        </View>
+
+        {/* Full Screen Swipe Card */}
+        <View style={styles.cardContainer}>
+          {currentIndex < profiles.length - 1 && (
+            <SwipeCard
+              key={profiles[currentIndex + 1].id}
+              card={profiles[currentIndex + 1]}
+              onSwipe={handleSwipe}
+              isNext
+            />
+          )}
+          {currentIndex < profiles.length && (
+            <SwipeCard
+              key={profiles[currentIndex].id}
+              card={profiles[currentIndex]}
+              onSwipe={handleSwipe}
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  safeArea: {
+    flex: 1,
+  },
+  filterContainer: {
+    position: 'absolute',
+    top: 16, // Padding from top
+    left: 16, // Padding from left
+    zIndex: 1, // Ensure the button is always on top
+  },
+  filterButton: {
+    backgroundColor: 'white',
+    borderRadius: 50,
+    padding: 8,
+    elevation: 4, // Subtle shadow for the button
   },
   cardContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',  // Ensures the card container takes up the full screen
   },
 });
-
