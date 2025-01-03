@@ -39,6 +39,15 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="requests"
+        options={{
+          title: 'Requests',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="cards-heart" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 } 

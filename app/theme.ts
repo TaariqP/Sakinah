@@ -64,7 +64,7 @@ const romanticTheme = {
     ...DefaultTheme.colors,
     primary: '#FF6F61', // A romantic pinkish-red
     accent: '#FFB6C1', // Light pink for accents
-    background: '#FFF0F5', // Lavender blush for a soft background
+    background: '#E0C3FC', // Lavender blush for a soft background
     surface: '#FFFFFF',
     text: '#333333',
     placeholder: '#FFB6C1',

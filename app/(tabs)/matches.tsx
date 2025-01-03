@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Avatar, Text, Surface, TouchableRipple } from 'react-native-paper';
-// import { Header } from '@/components/ui/Header';
+import { View, FlatList, StyleSheet, Image } from 'react-native';
+import { Text, Surface, TouchableRipple } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { profiles } from '@/utils/mockData'; // Import the profiles array
 import { UserProfile } from '@/utils/types';
+
 export default function MatchesScreen() {
   const router = useRouter();
 
@@ -15,11 +15,15 @@ export default function MatchesScreen() {
     >
       <Surface style={styles.profileSurface} elevation={0}>
         <View style={styles.profileContent}>
-          <Text style={styles.profileName}>{item.name}</Text>
-          {/* <Text style={styles.profileLocation}>{item.}</Text> */}
-          {/* <Text style={styles.profileBiography}>{item.biography}</Text> */}
-          {/* <Text style={styles.profileOccupation}>Occupation: {item.occupation}</Text> */}
-          {/* <Text style={styles.profileEducation}>Education: {item.education}</Text> */}
+          <Image 
+            source={{ uri: item.profileImage }} // Assuming profileImage is a property in UserProfile
+            style={styles.profileImage} 
+          />
+          <View style={styles.profileDetails}>
+            <Text style={styles.profileName}>{item.name}</Text>
+            <Text style={styles.profileAge}>{item.age}</Text>
+            <Text style={styles.profileLocation}>{item.location}</Text>
+          </View>
         </View>
       </Surface>
     </TouchableRipple>
@@ -50,33 +54,32 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   profileSurface: {
-    flexDirection: 'row',
-    alignItems: 'center',
     padding: 16,
     backgroundColor: 'white',
     borderRadius: 8,
   },
   profileContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 50, // Set the width of the profile image
+    height: 50, // Set the height of the profile image
+    borderRadius: 25, // Make it circular
+  },
+  profileDetails: {
     marginLeft: 16,
   },
   profileName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
+  profileAge: {
+    fontSize: 14,
+    color: '#666',
+  },
   profileLocation: {
     fontSize: 14,
-    color: 'gray',
-  },
-  profileBiography: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  profileOccupation: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  profileEducation: {
-    fontSize: 14,
-    color: 'gray',
+    color: '#666',
   },
 }); 

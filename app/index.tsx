@@ -1,106 +1,173 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text, Button, Surface, useTheme } from 'react-native-paper';
+import { View, StyleSheet, Image, ImageBackground, Pressable } from 'react-native';
+import { Text } from 'react-native-paper';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const theme = useTheme();
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Surface style={styles.content} elevation={0}>
-        <View style={styles.logoContainer}>
-          <Image 
-            source={require('../assets/images/sakinah-logo.png')} 
-            style={styles.logo}
-          />
-          <Text style={[styles.title, { color: theme.colors.primary }]}>
-            Sakinah
-          </Text>
-          <Text style={styles.subtitle}>
-            Find your perfect match
-          </Text>
+    <ImageBackground 
+      source={require('../assets/images/background.jpg')} // Replace with your background image
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        {/* Back Button */}
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={24} color="white" />
+        </Pressable>
+
+        <View style={styles.content}>
+          {/* Logo and Text */}
+          <View style={styles.headerContainer}>
+            <Text style={styles.logo}>Sakinah</Text>
+            <Text style={styles.tagline}>
+              The Muslim Marriage App
+            </Text>
+          </View>
+
+          {/* Buttons Container */}
+          <View style={styles.buttonContainer}>
+            {/* Phone Number Button */}
+            {/* <Pressable 
+              style={[styles.button, styles.phoneButton]} 
+              onPress={() => router.push('/(auth)/phone-login')}
+            >
+              <Ionicons name="call-outline" size={24} color="white" />
+              <Text style={[styles.buttonText, styles.phoneButtonText]}>
+                Continue with Phone Number
+              </Text>
+            </Pressable> */}
+
+            {/* Email Button */}
+            <Pressable 
+              style={[styles.button, styles.emailButton]}
+              onPress={() => router.push('/(auth)/login')}
+            >
+              <MaterialCommunityIcons name="login" size={24} color="white" />
+              <Text style={[styles.buttonText, styles.emailButtonText]}>
+                 Login
+              </Text>
+            </Pressable>
+
+            <Pressable 
+              style={[styles.button, styles.emailButton]}
+              onPress={() => router.push('/(auth)/login')}
+            >
+              <Ionicons name="mail-outline" size={24} color="white" />
+              <Text style={[styles.buttonText, styles.emailButtonText]}>
+                Register
+              </Text>
+            </Pressable>
+            <Pressable 
+              style={[styles.button, styles.emailButton]}
+              onPress={() => router.push('/(tabs)/discover')}
+            >
+              <Ionicons name="mail-outline" size={24} color="white" />
+              <Text style={[styles.buttonText, styles.emailButtonText]}>
+                Dev Only - Go to Discover
+              </Text>
+            </Pressable>
+          </View>
+
         </View>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            mode="contained"
-            onPress={() => router.push('/(auth)/login')}
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-          >
-            Sign In
-          </Button>
-
-          <Button
-            mode="outlined"
-            onPress={() => router.push('/(auth)/register')}
-            style={[styles.button, styles.registerButton]}
-            contentStyle={styles.buttonContent}
-          >
-            Create Account
-          </Button>
-
-          <Button
-            mode="text"
-            onPress={() => router.push('/(tabs)/discover')}
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-          >
-            Go to Discover
-          </Button>
-        </View>
-      </Surface>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  backButton: {
+    padding: 16,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 24,
-    backgroundColor: 'transparent',
+    justifyContent: 'space-between',
   },
-  logoContainer: {
+  headerContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginTop: '20%',
   },
   logo: {
-    width: 120,
-    height: 120,
+    fontSize: 64,
+    fontFamily: 'cursive', // You'll need to import a custom font
+    color: 'white',
     marginBottom: 16,
-    borderRadius: 60,
   },
-  title: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
+  tagline: {
     fontSize: 18,
-    color: '#666',
+    color: 'white',
     textAlign: 'center',
+    lineHeight: 24,
   },
   buttonContainer: {
     width: '100%',
-    paddingHorizontal: 16,
+    gap: 12,
+    marginBottom: 24,
   },
   button: {
-    marginBottom: 12,
-    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 30,
+    justifyContent: 'center',
+    gap: 12,
   },
-  registerButton: {
-    borderWidth: 2,
+  phoneButton: {
+    backgroundColor: '#FF4B7E',
   },
-  buttonContent: {
-    paddingVertical: 8,
+  googleButton: {
+    backgroundColor: '#4285F4',
   },
-}); 
+  appleButton: {
+    backgroundColor: 'white',
+  },
+  emailButton: {
+    backgroundColor: '#1C2732',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'white',
+  },
+  appleButtonText: {
+    color: 'black',
+  },
+  socialIcon: {
+    width: 24,
+    height: 24,
+  },
+  termsText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 12,
+    marginBottom: 24,
+  },
+  termsLink: {
+    textDecorationLine: 'underline',
+  },
+  languageSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    marginBottom: 8,
+  },
+  languageText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  versionText: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    textAlign: 'center',
+    fontSize: 12,
+  },
+});
+

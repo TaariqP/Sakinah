@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text, Button, Surface } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text } from 'react-native-paper';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
@@ -12,65 +12,57 @@ export default function SettingsScreen() {
     // Add your delete account logic here
   };
 
-  const handleViewProfile = () => {
-    // Navigate to the ViewProfile screen with the user ID
-    router.push('/(settings)/viewprofile');
-  };
+  const MenuItem = ({ icon, title, onPress, IconComponent = Feather, color = "#000" }) => (
+    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+      <View style={styles.menuItemContent}>
+        <Text style={styles.menuItemText}>{title}</Text>
+        <IconComponent name={icon} size={24} color={color} />
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-    <View style={styles.container}>
-      <Surface style={styles.settingsCard} elevation={4}>
-        <Image
-          source={{ uri: 'https://picsum.photos/seed/settings/200' }}
-          style={styles.settingsImage}
-        />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>john.doe@example.com</Text>
-      </Surface>
-
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          icon="account-edit"
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          onPress={() => console.log('Edit Profile')}
-        >
-          Edit Profile
-        </Button>
-
-        <Button
-          mode="contained"
-          icon="delete"
-          buttonColor="#d9534f"
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          onPress={handleDeleteAccount}
-        >
-          Delete Account
-        </Button>
-
-        <Button
-          mode="outlined"
-          icon="account"
-          style={styles.outlinedButton}
-          contentStyle={styles.buttonContent}
-          onPress={handleViewProfile}
-        >
-          View Profile
-        </Button>
-
-        <Button
-          mode="outlined"
-          icon="email"
-          style={styles.outlinedButton}
-          contentStyle={styles.buttonContent}
-          onPress={() => console.log('Contact Us')}
-        >
-          Contact Us
-        </Button>
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Settings</Text>
       </View>
-    </View>
+
+      {/* Profile Section */}
+      <View style={styles.profileSection}>
+        <View style={styles.profileImageContainer}>
+          <Image
+            source={{ uri: 'https://picsum.photos/seed/settings/200' }}
+            style={styles.profileImage}
+          />
+        </View>
+        <Text style={styles.profileName}>Tariq</Text>
+        <Text style={styles.profileHandle}>@t__r1q</Text>
+        <TouchableOpacity>
+          <Text style={styles.viewProfile}>View profile</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Menu Items */}
+      <View style={styles.menuContainer}>
+        <MenuItem 
+          title="Edit Profile" 
+          icon="edit-2"
+          onPress={() => console.log('Edit Profile')}
+        />
+        <MenuItem 
+          title="Contact Us" 
+          icon="mail"
+          onPress={() => console.log('Contact Us')}
+        />
+        <MenuItem 
+          title="Delete Account" 
+          icon="trash-2"
+          color="#d9534f"
+          onPress={handleDeleteAccount}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -78,48 +70,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    paddingTop: 40, // Increased padding from the top
-    paddingHorizontal: 16,
   },
-  settingsCard: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
-    marginBottom: 24,
-    borderRadius: 16,
-    backgroundColor: '#f9f9f9',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
-  settingsImage: {
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  profileSection: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  profileImageContainer: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 16,
-    borderColor: '#ccc',
-    borderWidth: 1,
+    borderWidth: 3,
+    borderColor: '#00e5bf',
+    padding: 3,
   },
-  name: {
-    fontSize: 20,
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 57,
+  },
+  profileName: {
+    fontSize: 24,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
+    marginTop: 15,
   },
-  email: {
-    fontSize: 14,
-    color: '#777',
+  profileHandle: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 5,
   },
-  buttonContainer: {
-    marginTop: 16,
+  viewProfile: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 10,
   },
-  button: {
-    marginBottom: 12,
-    borderRadius: 8,
+  menuContainer: {
+    paddingHorizontal: 20,
   },
-  outlinedButton: {
-    marginBottom: 12,
-    borderRadius: 8,
-    borderColor: '#007bff',
+  menuItem: {
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
-  buttonContent: {
-    flexDirection: 'row-reverse',
-    paddingVertical: 8,
+  menuItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  menuItemText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

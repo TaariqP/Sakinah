@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, Dimensions, Image, Animated } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,18 +8,31 @@ import { profiles } from '@/utils/mockData'; // Import the profiles array
 
 const { width, height } = Dimensions.get('window');
 
-interface Profile {
-  id: number;
-  name: string;
-  age: number;
-}
-
 export default function HomeScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const translateX = useRef(new Animated.Value(0)).current; // Animated value for swipe effect
+  const rotate = useRef(new Animated.Value(0)).current; // Animated value for rotation effect
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    console.log(`Swiped ${direction} on ${profiles[currentIndex].name}`);
-    setCurrentIndex(prev => Math.min(prev + 1, profiles.length - 1));
+    const toValue = direction === 'left' ? -width : width; // Determine swipe direction
+    const rotationValue = direction === 'left' ? -15 : 15; // Set rotation angle
+
+    Animated.parallel([
+      Animated.timing(translateX, {
+        toValue,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rotate, {
+        toValue: rotationValue,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setCurrentIndex(prev => Math.min(prev + 1, profiles.length - 1));
+      translateX.setValue(0); // Reset position for the next card
+      rotate.setValue(0); // Reset rotation for the next card
+    });
   };
 
   const handleFilterPress = () => {
@@ -33,8 +46,12 @@ export default function HomeScreen() {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
-        {/* Filter Button */}
-        <View style={styles.filterContainer}>
+        {/* Header with Logo and Filter Button */}
+        <View style={styles.headerContainer}>
+          <Image
+            source={require('../../assets/images/logo-only.png')} // Your transparent logo file
+            style={styles.logo}
+          />
           <IconButton
             icon="filter-variant"
             size={30}
@@ -45,20 +62,23 @@ export default function HomeScreen() {
 
         {/* Full Screen Swipe Card */}
         <View style={styles.cardContainer}>
-          {currentIndex < profiles.length - 1 && (
-            <SwipeCard
-              key={profiles[currentIndex + 1].id}
-              card={profiles[currentIndex + 1]}
-              onSwipe={handleSwipe}
-              isNext
-            />
-          )}
           {currentIndex < profiles.length && (
-            <SwipeCard
-              key={profiles[currentIndex].id}
-              card={profiles[currentIndex]}
-              onSwipe={handleSwipe}
-            />
+            <Animated.View style={{ 
+              transform: [
+                { translateX },
+                { rotate: rotate.interpolate({
+                    inputRange: [-15, 15],
+                    outputRange: ['-15deg', '15deg'],
+                  }) 
+                }
+              ] 
+            }}>
+              <SwipeCard
+                key={profiles[currentIndex].id}
+                userProfile={profiles[currentIndex]}
+                onSwipe={handleSwipe}
+              />
+            </Animated.View>
           )}
         </View>
       </SafeAreaView>
@@ -73,11 +93,16 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  filterContainer: {
-    position: 'absolute',
-    top: 16, // Padding from top
-    left: 16, // Padding from left
-    zIndex: 1, // Ensure the button is always on top
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16, // Padding for the header
+  },
+  logo: {
+    width: 80, // Adjusted width if needed
+    height: 30, // Adjusted height if needed
+    resizeMode: 'contain', // Ensure the logo maintains its aspect ratio
   },
   filterButton: {
     backgroundColor: 'white',

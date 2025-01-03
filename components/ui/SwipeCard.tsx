@@ -1,331 +1,367 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  runOnJS,
-  interpolate,
-  Extrapolate,
-} from 'react-native-reanimated';
-import { Surface, useTheme } from 'react-native-paper';
+import React, { useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { UserProfile } from '@/utils/types';
+import { Divider } from 'react-native-paper';
 
 const { width, height } = Dimensions.get('window');
 
 interface SwipeCardProps {
-  card: UserProfile;
+  userProfile: UserProfile;
   onSwipe: (direction: 'left' | 'right') => void;
+  isNext?: boolean;
 }
 
-const SwipeCard = ({ card, onSwipe, isNext = false }: SwipeCardProps & { isNext?: boolean }) => {
-  const theme = useTheme();
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const scale = useSharedValue(isNext ? 0.95 : 1);
-  const opacity = useSharedValue(1);
-  const [scrollViewHeight, setScrollViewHeight] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [scrollPosition, setScrollPosition] = useState(0);
+// Define a type for the section keys
+type SectionKey = "Basic Info" | "Physical Attributes" | "Education & Career" | "Religiousness" | "Marriage Details" | "Lifestyle";
 
-  // Animation for the card position
-  const cardStyle = useAnimatedStyle(() => {
-    const rotation = interpolate(
-      translateX.value,
-      [-width / 2, 0, width / 2],
-      [-30, 0, 30],
-      Extrapolate.CLAMP
-    );
+const SwipeCard: React.FC<SwipeCardProps> = React.memo(({ userProfile, onSwipe }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
 
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value },
-        { rotate: `${rotation}deg` },
-      ],
-      opacity: opacity.value,
-      zIndex: isNext ? 0 : 1,
-    };
-  });
+  const {
+    name,
+    age,
+    gender,
+    dateOfBirth,
+    ethnicity,
+    currentLocation,
+    legalStatus,
+    languages,
+    height,
+    build,
+    complexion,
+    religiousAppearance,
+    disabilities,
+    education,
+    occupation,
+    bornMuslim,
+    religiousPractice,
+    religiousManhaj,
+    sect,
+    maritalStatus,
+    hasChildren,
+    wantChildren,
+    willingToRelocate,
+    maritalTiming,
+    desiredLivingArrangements,
+    drinking,
+    smoking,
+    halal,
+    id,
+    biography,
+  } = userProfile;
 
-  // Reset animations when card changes
-  React.useEffect(() => {
-    if (!isNext) {
-      translateX.value = 0;
-      translateY.value = 0;
-      scale.value = withSpring(1);
-      opacity.value = 1;
-    } else {
-      scale.value = 0.95;
+  const sections: Record<SectionKey, Record<string, string>> = {
+    "Basic Info": {
+      Ethnicity: ethnicity,
+      "Current Location": currentLocation,
+      "Legal Status": legalStatus,
+      Languages: languages,
+    },
+    "Physical Attributes": {
+      Build: build,
+      Height: height,
+      Complexion: complexion,
+      Disabilities: disabilities,
+    },
+    "Education & Career": {
+      Education: education,
+      Occupation: occupation,
+    },
+    "Religiousness": {
+      "Born Muslim": bornMuslim,
+      "Religious Practice": religiousPractice,
+      "Religious Appearance": religiousAppearance,
+      "Religious Manhaj": religiousManhaj,
+      "Sect": sect,
+    },
+    "Marriage Details": {
+      "Marital Status": maritalStatus,
+      "Has Children": hasChildren,
+      "Want Children": wantChildren,
+      "Willing to Relocate": willingToRelocate,
+      "Marital Timing": maritalTiming,
+      "Desired Living Arrangements": desiredLivingArrangements,
+    },
+    "Lifestyle": {
+      Drinking: drinking,
+      Smoking: smoking,
+      Halal: halal,
     }
-  }, [card.id, isNext]);
-
-  // Swipe card left
-  const swipeLeft = () => {
-    translateX.value = withSpring(-width * 1.5, {
-      damping: 15,
-      stiffness: 100,
-    });
-    translateY.value = withSpring(50, {
-      damping: 15,
-      stiffness: 100,
-    });
-    opacity.value = withTiming(0, { duration: 300 }, () => {
-      runOnJS(onSwipe)('left');
-    });
   };
 
-  // Swipe card right
-  const swipeRight = () => {
-    translateX.value = withSpring(width * 1.5, {
-      damping: 15,
-      stiffness: 100,
-    });
-    translateY.value = withSpring(50, {
-      damping: 15,
-      stiffness: 100,
-    });
-    opacity.value = withTiming(0, { duration: 300 }, () => {
-      runOnJS(onSwipe)('right');
-    });
+  const sectionIcons = {
+    "Basic Info": "account-details",
+    "Physical Attributes": "human",
+    "Education & Career": "school",
+    "Religiousness": "mosque",
+    "Marriage Details": "ring",
+    "Lifestyle": "coffee"
   };
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    setScrollPosition(contentOffset.y);
-    setScrollViewHeight(layoutMeasurement.height);
-    setContentHeight(contentSize.height);
-  };
-
-  const scrollIndicatorHeight = scrollViewHeight > 0 
-    ? (scrollViewHeight / contentHeight) * scrollViewHeight 
-    : 0;
-  
-  const scrollIndicatorPosition = scrollViewHeight > 0 
-    ? (scrollPosition / (contentHeight - scrollViewHeight)) * (scrollViewHeight - scrollIndicatorHeight)
-    : 0;
-
-  console.log(card);
 
   return (
-    <Animated.View style={[styles.card, cardStyle]}>
-      <View style={styles.cardInner}>
-        <ScrollView 
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        >
+    <View style={styles.card}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.imageContainer}>
           <Image
-            source={{ uri: `https://picsum.photos/seed/${card.id}/400/600` }}
-            style={styles.image}
+            source={{ uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png' }}
+            style={styles.profileImage}
           />
-          <View style={styles.infoSection}>
-            <View style={styles.infoContainer}>
-              <View style={styles.textContainer}>
-                <Text style={styles.name}>{card.name}</Text>
-                <Text style={styles.age}>{card.age} years old</Text>
-              </View>
-              <Text style={styles.id}>#{card.id}</Text>
+          <View style={styles.imageOverlay}>
+            <Text style={styles.nameAge}>{name}, {age}</Text>
+            <View style={styles.locationContainer}>
+              <MaterialCommunityIcons name="map-marker" size={16} color="#FFF" />
+              <Text style={styles.locationText}>{currentLocation}</Text>
             </View>
-            
-            {/* Additional content */}
-            <View style={styles.additionalInfo}>
-              <Text style={styles.sectionTitle}>About</Text>
-              <Text style={styles.description}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </Text>
-              
-              <Text style={styles.sectionTitle}>Interests</Text>
-              <View style={styles.interestsContainer}>
-                {['Travel', 'Music', 'Food', 'Sports', 'Art'].map((interest, index) => (
-                  <View key={index} style={styles.interestTag}>
-                    <Text style={styles.interestText}>{interest}</Text>
+          </View>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <View style={styles.tagsContainer}>
+            <View style={[styles.tag, { backgroundColor: '#E3F2FD' }]}>
+              <MaterialCommunityIcons name="moon-waning-crescent" size={14} color="#1976D2" />
+              <Text style={[styles.tagText, { color: '#1976D2' }]}>{sect}</Text>
+            </View>
+            <View style={[styles.tag, { backgroundColor: '#E8F5E9' }]}>
+              <MaterialCommunityIcons name="school" size={14} color="#388E3C" />
+              <Text style={[styles.tagText, { color: '#388E3C' }]}>{education}</Text>
+            </View>
+            <View style={[styles.tag, { backgroundColor: '#FFF3E0' }]}>
+              <MaterialCommunityIcons name="briefcase" size={14} color="#F57C00" />
+              <Text style={[styles.tagText, { color: '#F57C00' }]}>{occupation}</Text>
+            </View>
+            <View style={[styles.tag, { backgroundColor: '#FCE4EC' }]}>
+              <Image 
+                source={{ uri: `https://flagcdn.com/w20/${ethnicity.toLowerCase()}.png` }}
+                style={styles.flagIcon}
+              />
+              <Text style={[styles.tagText, { color: '#C2185B' }]}>{ethnicity}</Text>
+            </View>
+          </View>
+
+          <View style={styles.aboutContainer}>
+            <Text style={styles.aboutTitle}>About Me</Text>
+            <Text style={styles.aboutText}>{biography}</Text>
+          </View>
+
+          {Object.entries(sections).map(([sectionTitle, sectionData], index) => (
+            <React.Fragment key={sectionTitle}>
+              <Divider style={styles.divider} />
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionHeader}>
+                  <MaterialCommunityIcons
+                    name={sectionIcons[sectionTitle]}
+                    size={24}
+                    color="#6B4EFF"
+                    style={styles.sectionIcon}
+                  />
+                  <Text style={styles.sectionTitle}>{sectionTitle}</Text>
+                </View>
+                {Object.entries(sectionData).map(([key, value]) => (
+                  <View key={key} style={styles.attributeRow}>
+                    <Text style={styles.attributeKey}>{key}</Text>
+                    <Text style={styles.attributeValue}>{value}</Text>
                   </View>
                 ))}
               </View>
-            </View>
-          </View>
-        </ScrollView>
-        
-        {/* Custom Scroll Indicator */}
-        {contentHeight > scrollViewHeight && (
-          <View style={styles.scrollIndicatorContainer}>
-            <View 
-              style={[
-                styles.scrollIndicator, 
-                { 
-                  height: scrollIndicatorHeight,
-                  transform: [{ translateY: scrollIndicatorPosition }],
-                  backgroundColor: theme.colors.primary,
-                }
-              ]} 
-            />
-          </View>
-        )}
-      </View>
+            </React.Fragment>
+          ))}
+        </View>
+      </ScrollView>
 
-      {/* Buttons */}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={[styles.button, styles.buttonLeft]} onPress={swipeLeft}>
-          <Text style={styles.buttonText}>X</Text>
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.dislikeButton]}
+          onPress={() => onSwipe('left')}
+        >
+          <MaterialCommunityIcons name="close" size={24} color="#FF5252" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.buttonRight]} onPress={swipeRight}>
-          <Text style={styles.buttonText}>✔</Text>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.likeButton]}
+          onPress={() => onSwipe('right')}
+        >
+          <MaterialCommunityIcons name="heart" size={24} color="#4CAF50" />
         </TouchableOpacity>
       </View>
-    </Animated.View>
+    </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   card: {
-    position: 'absolute',
-    width: width * 0.9,
-    height: height * 0.75,
+    width: width * 0.92,
+    height: height * 0.8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardSurface: {
-    flex: 1,
-    borderRadius: 20,
-  },
-  cardInner: {
-    flex: 1,
-    borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: 'white',
+    position: 'relative',
+    marginBottom: 20,
   },
-  image: {
-    width: '100%',
-    height: height * 0.5,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  infoSection: {
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  infoContainer: {
-    padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  textContainer: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  age: {
-    fontSize: 20,
-    color: '#666',
-    marginTop: 5,
-  },
-  id: {
-    fontSize: 16,
-    color: '#999',
-    fontWeight: '500',
-    marginLeft: 10,
-  },
-  buttonsContainer: {
-    position: 'absolute',
-    bottom: 20,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 40,
-  },
-  button: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  buttonLeft: {
-    backgroundColor: '#ff6b6b',
-  },
-  buttonRight: {
-    backgroundColor: '#4caf50',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  scrollContent: {
+  scrollContainer: {
     flexGrow: 1,
   },
-  additionalInfo: {
-    padding: 20,
+  imageContainer: {
+    height: height * 0.45,
+    position: 'relative',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginTop: 15,
-    marginBottom: 10,
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
-  description: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 24,
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  interestsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 5,
-  },
-  interestTag: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginRight: 8,
+  nameAge: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
-  interestText: {
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  locationText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginLeft: 4,
+  },
+  contentContainer: {
+    padding: 20,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 20,
+  },
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    gap: 6,
+  },
+  tagText: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: '600',
   },
-  scrollIndicatorContainer: {
-    position: 'absolute',
-    right: 4,
-    top: 0,
-    bottom: 0,
-    width: 4,
-    borderRadius: 2,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+  aboutContainer: {
+    marginTop: 10,
+    backgroundColor: '#F5F5F5',
+    padding: 15,
+    borderRadius: 10,
   },
-  scrollIndicator: {
-    width: 4,
-    borderRadius: 2,
+  aboutTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 10,
+    color: '#333333',
+  },
+  aboutText: {
+    fontSize: 16,
+    color: '#555555',
+    lineHeight: 24,
+  },
+  divider: {
+    marginVertical: 20,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  sectionContainer: {
+    marginTop: 10,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#333333',
+    marginBottom: 15,
+    textTransform: 'uppercase',
+  },
+  attributeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  attributeKey: {
+    fontSize: 16,
+    color: '#666666',
+    flex: 1,
+  },
+  attributeValue: {
+    fontSize: 16,
+    color: '#333333',
+    flex: 1,
+    textAlign: 'right',
+    fontWeight: '500',
+  },
+  actions: {
     position: 'absolute',
-    top: 0,
+    bottom: 20,
+    left: 0,
     right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  actionButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  dislikeButton: {
+    borderWidth: 2,
+    borderColor: '#FF5252',
+  },
+  likeButton: {
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+  },
+  flagIcon: {
+    width: 20,
+    height: 14,
+    marginRight: 4,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionIcon: {
+    marginRight: 8,
+    marginBottom: 12
   },
 });
 
 export default SwipeCard;
+
